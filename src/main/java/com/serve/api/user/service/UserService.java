@@ -104,13 +104,13 @@ public class UserService {
 //        return user;
 //    }
 
-    private /*synchronized*/ User createAndSaveUser(String mobile, String region) {
-        User user = new User();
-        if (!StringUtils.isEmpty(mobile)) {
-            user.setMobile(mobile);
-        }
-        user = userRepository.save(user);
-        int userId = user.getId();
-        return userRepository.save(user);
-    }
+//    private /*synchronized*/ User createAndSaveUser(String mobile, String region) {
+//        User user = new User();
+//        if (!StringUtils.isEmpty(mobile)) {
+//            user.setMobile(mobile);
+//        }
+//        user = userRepository.save(user);
+//        int userId = user.getId();
+//        return userRepository.save(user);
+//    }
 }
