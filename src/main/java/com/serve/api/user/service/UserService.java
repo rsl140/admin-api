@@ -5,6 +5,7 @@ import com.serve.api.comm.config.JwtHelper;
 import com.serve.api.comm.enums.EnableStatus;
 import com.serve.api.comm.enums.ErrorCode;
 import com.serve.api.comm.model.BusinessException;
+import com.serve.api.comm.service.MemoryCache;
 import com.serve.api.user.entity.User;
 import com.serve.api.user.enums.LoginType;
 import com.serve.api.user.repository.UserRepository;
@@ -29,9 +30,37 @@ public class UserService {
     @Autowired
     private UserSecurityService userSecurityService;
 
-    public User loginByPassword(String mobile, String password) {
+    public User getById(int userId) {
+        long timestart = System.currentTimeMillis();
+        User user = userRepository.findById(userId).orElse(null);
+        log.info("findById(userId) 耗时：{} 毫秒", System.currentTimeMillis() - timestart);
+        if (user == null || EnableStatus.ENABLE != user.getStatus()) {
+            throw BusinessException.instance(ErrorCode.USER_UNNORMAL);
+        }
+        return user;
+    }
+
+    public Map<String, Object> login(LoginType loginType, String email, String param) {
+        User user = null;
+        if (LoginType.PASSWORD == loginType && !StringUtils.isEmpty(param)) {
+            if (StringUtils.isEmpty(email)) {
+                throw BusinessException.instance(ErrorCode.E_PARAM);
+            }
+            user = loginByPassword(email, param);
+        } else if (StringUtils.isEmpty(param)) {
+            throw BusinessException.instance(ErrorCode.E_PARAM);
+        }
+        Map<String, Object> map = new HashMap<>();
+        String token = JwtHelper.createJWT(user.getId() + "");
+        map.put("access_token", token);
+        map.put("expires_in", JwtHelper.expirestime / 1000);
+        map.put("scope", "read write");
+        return map;
+    }
+
+    public User loginByPassword(String email, String password) {
         List<User> userList = new ArrayList<>();
-        User user = userRepository.findFirstByMobileAndStatus(mobile, EnableStatus.ENABLE);
+        User user = userRepository.findFirstByEmailAndStatus(email, EnableStatus.ENABLE);
         if (null != user) {
             userList.add(user);
         }
@@ -51,34 +80,38 @@ public class UserService {
         return loginUser;
     }
 
-    public User getById(int userId) {
-        long timestart = System.currentTimeMillis();
-        User user = userRepository.findById(userId).orElse(null);
-        log.info("findById(userId) 耗时：{} 毫秒", System.currentTimeMillis() - timestart);
-        if (user == null || EnableStatus.ENABLE != user.getStatus()) {
-            throw BusinessException.instance(ErrorCode.USER_UNNORMAL);
+    public User registerByEmail(String email, String password) {
+        String lockKey = "registerByEmail-" + email;
+        String lock = MemoryCache.getLock(lockKey);
+        synchronized (lock) {
+            return registerByEmail_(email, password);
         }
+    }
+
+    // 邮箱注册
+    public synchronized User registerByEmail_(String email, String password) {
+        //参数验证
+        if (StringUtils.isEmpty(email)) {
+            throw new BusinessException(ErrorCode.E_PARAM);
+        }
+        //是否已经存在
+        User user = userRepository.findFirstByEmailAndStatus(email, EnableStatus.ENABLE);
+        if (user == null) {
+//            throw new BusinessException(ErrorCode.USER_HAD_EXISTS);
+            user = createAndSaveUser(email);
+        }
+        userSecurityService.setUserPassword(user.getId(), password);
         return user;
     }
 
-    public Map<String, Object> login(LoginType loginType, String mobile, String param) {
-        String region = null;
-        String userInviteCode = null;
-        User user = null;
-        if (LoginType.PASSWORD == loginType && !StringUtils.isEmpty(param)) {
-            if (StringUtils.isEmpty(mobile)) {
-                throw BusinessException.instance(ErrorCode.E_PARAM);
-            }
-            user = loginByPassword(mobile, param);
-        } else if (StringUtils.isEmpty(param)) {
-            throw BusinessException.instance(ErrorCode.E_PARAM);
+    private /*synchronized*/ User createAndSaveUser(String email) {
+        User user = new User();
+        if (!StringUtils.isEmpty(email)) {
+            user.setEmail(email);
         }
-        Map<String, Object> map = new HashMap<>();
-        String token = JwtHelper.createJWT(user.getId() + "");
-        map.put("access_token", token);
-        map.put("expires_in", JwtHelper.expirestime / 1000);
-        map.put("scope", "read write");
-        return map;
+        user = userRepository.save(user);
+        int userId = user.getId();
+        return userRepository.save(user);
     }
 
 //    public User registerByPhone(String phone, String password, String region) {

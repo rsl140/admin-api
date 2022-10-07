@@ -51,8 +51,8 @@ spring:
 server:
   port: 8889
 jwt:
-  clientId: apitoken202107151815dgag8
-  secret: apitoken201909051815!@hgeop322
+  clientId: xxxxxxx
+  secret: xxxxxxx
   name: api
   expiretime: 2592000000  #  //毫秒,1个月
 

@@ -9,12 +9,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Set;
 
-public interface UserRepository extends JpaRepository<User,Integer> {
+public interface UserRepository extends JpaRepository<User, Integer> {
     User findFirstByMobileAndStatus(String mobile, EnableStatus status);
+
+    User findFirstByEmailAndStatus(String email, EnableStatus status);
+
     List<User> findByMobileIn(List<String> mobileList);
+
     List<User> findByMobileIn(String[] mobileList);
+
     List<User> findByIdIn(Set<Integer> userIdList);
+
     List<User> findByIdIn(List<Integer> userIdList);
+
     Page<User> findByStatusAndIdNotOrderByIdDesc(EnableStatus status, int userId, Pageable pageable);
+
     Page<User> findByStatusAndHeadUrlIsNotNullAndIdNotOrderByIdDesc(EnableStatus status, int userId, Pageable pageable);
 }

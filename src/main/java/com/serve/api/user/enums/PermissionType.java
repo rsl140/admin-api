@@ -2,14 +2,15 @@ package com.serve.api.user.enums;
 
 import io.swagger.annotations.ApiModel;
 
-@ApiModel("组织类别")
-public enum OrganizationType {
-    MANAGE("管理"),
-    CLIENT("客户");
+@ApiModel("权限")
+public enum PermissionType {
+    SUPER("所有权限"),
+    ORG_ROOT("仅次于super"),
+    DATA_ENTRY("仅能提交数据");
 
     private String value;
 
-    OrganizationType(String value) {
+    PermissionType(String value) {
         this.value = value;
     }
 
