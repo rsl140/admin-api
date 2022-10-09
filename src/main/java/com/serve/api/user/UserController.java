@@ -10,10 +10,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -58,6 +55,14 @@ public class UserController {
         return Result.okResult(JwtHelper.createJWT(String.valueOf(user.getId())));
     }
 
-//    用户信息
+    //    用户信息
+    @ApiOperation(value = "用户信息", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "header", name = "Authorization", value = "token", required = false, dataType = "String"),
 
+    })
+    @GetMapping("userInfo")
+    public Result getUserInfo() {
+        return Result.okResult(null);
+    }
 }

@@ -49,8 +49,19 @@ public class SecurityInterceptor implements WebMvcConfigurer, HandlerInterceptor
         response.setContentType("text/html;charset=utf-8");
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Cache-Control", "no-cache");
-        String token = request.getParameter("token");
-        String token2 = request.getHeader("Authorization");
+        String authorization = request.getHeader("Authorization");
+        String token = null;
+
+        //请求头
+        if (!StringUtils.isEmpty(authorization)) {
+            String[] authorizationInfos = authorization.split(" ");
+            if (authorizationInfos[0].equals("Bearer")) {
+                token = authorizationInfos[1];
+            }
+        } else if (!StringUtils.isEmpty(request.getParameter("access_token"))) {
+            token = request.getParameter("access_token");
+        }
+
         if (StringUtils.isEmpty(token)) {
             throw BusinessException.instance(ErrorCode.INVALID_TOKEN);
         } else {
