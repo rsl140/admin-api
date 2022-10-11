@@ -3,14 +3,16 @@ package com.serve.api.user;
 import com.serve.api.comm.config.JwtHelper;
 import com.serve.api.comm.model.Result;
 import com.serve.api.user.entity.User;
-import com.serve.api.user.enums.LoginType;
+import com.serve.api.user.model.LoginBody;
 import com.serve.api.user.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Map;
 
@@ -29,20 +31,10 @@ public class UserController {
             @ApiImplicitParam(paramType = "query", name = "param", value = "密码登陆是，传密码；短信-短信验证码；一键登录-运营商token；第三方登陆时-第三方code；当WECHAT_GZH_WEBAPP时，param传ticket", required = false, dataType = "String"),
     })
     @PostMapping("vt/login")
-    public synchronized Result login(LoginType loginType, String email, String param) {
-        Map<String, Object> map = userService.login(loginType, email, param);
+    public synchronized Result login(@RequestBody LoginBody loginBody) {
+        Map<String, Object> map = userService.login(loginBody);
         return Result.okResult(map);
     }
-
-
-//    @ApiOperation(value = "登录", notes = "")
-//    @ApiImplicitParams({
-//    })
-//    @PostMapping("vt/login")
-//    public Result login(@RequestBody User user) {
-//        return Result.okResult(user);
-//    }
-
 
     @ApiOperation(value = "邮箱+密码注册接口", notes = "")
     @ApiImplicitParams({
@@ -56,13 +48,28 @@ public class UserController {
     }
 
     //    用户信息
-    @ApiOperation(value = "用户信息", notes = "")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "header", name = "Authorization", value = "token", required = false, dataType = "String"),
+//    @ApiOperation(value = "用户信息", notes = "")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "header", name = "Authorization", value = "token", required = false, dataType = "String"),
+//
+//    })
+//    @GetMapping("userInfo")
+//    public Result getUserInfo() {
+//        return Result.okResult(null);
+//    }
 
-    })
-    @GetMapping("userInfo")
-    public Result getUserInfo() {
-        return Result.okResult(null);
+    @ApiOperation(value = "获取用户信息接口", notes = "")
+    @ApiImplicitParams({})
+    @GetMapping("getUserInfo")
+    public Result<User> getUserInfo(@ApiIgnore @RequestAttribute int userId) {
+        User user = userService.getById(userId);
+        User user1 = new User();
+        BeanUtils.copyProperties(user, user1);
+        user = user1;
+//        if (!StringUtils.isEmpty(userType)) {
+//            userService.prepareUserOrganization(user, userType);
+//            userService.prepareRoleInfoByUserType(user, userType);
+//        }
+        return Result.okResult(user);
     }
 }

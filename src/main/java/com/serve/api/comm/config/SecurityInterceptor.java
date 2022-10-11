@@ -5,6 +5,7 @@ import com.serve.api.comm.model.BusinessException;
 import com.serve.api.comm.utils.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -48,7 +49,13 @@ public class SecurityInterceptor implements WebMvcConfigurer, HandlerInterceptor
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=utf-8");
         response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Cache-Control", "no-cache");
+
+        if (HttpMethod.OPTIONS.toString().equals(request.getMethod())) {
+            return true;
+        }
+
         String authorization = request.getHeader("Authorization");
         String token = null;
 
@@ -99,6 +106,8 @@ public class SecurityInterceptor implements WebMvcConfigurer, HandlerInterceptor
                 .allowCredentials(true)
                 // 设置允许的方法
                 .allowedMethods("*")
+                // 允许跨域的请求头
+                .allowedHeaders("*")
                 // 跨域允许时间
                 .maxAge(3600)
         ;

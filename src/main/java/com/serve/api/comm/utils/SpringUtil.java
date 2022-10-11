@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 @Component
 @Slf4j
@@ -78,6 +79,30 @@ public class SpringUtil implements ApplicationContextAware {
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
         Locale local = localeResolver == null ? Locale.getDefault() : localeResolver.resolveLocale(request);
         return local;
+    }
+
+    /**
+     * 判断是否是手机
+     *
+     * @return
+     */
+    public static boolean isPhone(String tel) {
+        if (tel != null && (!tel.isEmpty())) {
+            return Pattern.matches("^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(16[5,6])|(17[0-8])|(18[0-9])|(19[1、5、8、9]))\\d{8}$", tel);
+        }
+        return true;
+    }
+
+    /**
+     * 判断是否是邮箱
+     *
+     * @return
+     */
+    public static boolean isEmail(String email) {
+        if (email != null && (!email.isEmpty())) {
+            return Pattern.matches("^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$", email);
+        }
+        return true;
     }
 
 }

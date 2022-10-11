@@ -6,8 +6,10 @@ import com.serve.api.comm.enums.EnableStatus;
 import com.serve.api.comm.enums.ErrorCode;
 import com.serve.api.comm.model.BusinessException;
 import com.serve.api.comm.service.MemoryCache;
+import com.serve.api.comm.utils.SpringUtil;
 import com.serve.api.user.entity.User;
 import com.serve.api.user.enums.LoginType;
+import com.serve.api.user.model.LoginBody;
 import com.serve.api.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -40,13 +39,16 @@ public class UserService {
         return user;
     }
 
-    public Map<String, Object> login(LoginType loginType, String email, String param) {
+    public Map<String, Object> login(LoginBody loginBody) {
         User user = null;
+        LoginType loginType = loginBody.getLoginType();
+        String param = loginBody.getParam();
+        String account = loginBody.getAccount();
         if (LoginType.PASSWORD == loginType && !StringUtils.isEmpty(param)) {
-            if (StringUtils.isEmpty(email)) {
+            if (StringUtils.isEmpty(account)) {
                 throw BusinessException.instance(ErrorCode.E_PARAM);
             }
-            user = loginByPassword(email, param);
+            user = loginByPassword(loginBody);
         } else if (StringUtils.isEmpty(param)) {
             throw BusinessException.instance(ErrorCode.E_PARAM);
         }
@@ -58,9 +60,18 @@ public class UserService {
         return map;
     }
 
-    public User loginByPassword(String email, String password) {
+    public User loginByPassword(LoginBody loginBody) {
         List<User> userList = new ArrayList<>();
-        User user = userRepository.findFirstByEmailAndStatus(email, EnableStatus.ENABLE);
+        User user = null;
+        String password = loginBody.getParam();
+        String account = loginBody.getAccount();
+        if (SpringUtil.isEmail(account)) {
+            user = userRepository.findFirstByEmailAndStatus(account, EnableStatus.ENABLE);
+        } else if (SpringUtil.isPhone(account)) {
+            user = userRepository.findFirstByMobileAndStatus(account, EnableStatus.ENABLE);
+        } else {
+            user = userRepository.findFirstByNameAndStatus(account, EnableStatus.ENABLE);
+        }
         if (null != user) {
             userList.add(user);
         }
@@ -77,6 +88,9 @@ public class UserService {
         if (null == loginUser) {
             throw BusinessException.instance(ErrorCode.NAME_PW_OR_ERROR);
         }
+        loginUser.setLoginCount(loginUser.getLoginCount() + 1);
+        loginUser.setLoginTime(new Date());
+        userRepository.save(loginUser);
         return loginUser;
     }
 
@@ -113,37 +127,4 @@ public class UserService {
         int userId = user.getId();
         return userRepository.save(user);
     }
-
-//    public User registerByPhone(String phone, String password, String region) {
-//        String lockKey = "registerByPhone-" + phone;
-//        String lock = MemoryCache.getLock(lockKey);
-//        synchronized (lock) {
-//            return registerByPhone_(phone, password, region);
-//        }
-//    }
-//
-//    public synchronized User registerByPhone_(String phone, String password, String region) {
-//        //参数验证
-//        if (StringUtils.isEmpty(phone)) {
-//            throw new BusinessException(ErrorCode.E_PARAM);
-//        }
-//        //是否已经存在
-//        User user = userRepository.findFirstByMobileAndStatus(phone, EnableStatus.ENABLE);
-//        if (user == null) {
-////            throw new BusinessException(ErrorCode.USER_HAD_EXISTS);
-//            user = createAndSaveUser(phone, region);
-//        }
-//        userSecurityService.setUserPassword(user.getId(), password);
-//        return user;
-//    }
-
-//    private /*synchronized*/ User createAndSaveUser(String mobile, String region) {
-//        User user = new User();
-//        if (!StringUtils.isEmpty(mobile)) {
-//            user.setMobile(mobile);
-//        }
-//        user = userRepository.save(user);
-//        int userId = user.getId();
-//        return userRepository.save(user);
-//    }
 }
