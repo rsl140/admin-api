@@ -18,6 +18,11 @@ public class CommServiceImpl implements CommService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
+    private MenuRepository menuRepository;
+
+    @Autowired
+    private RoleMenuRepository roleMenuRepository;
+    @Autowired
     private RolePermissionRepository rolePermissionRepository;
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -80,6 +85,21 @@ public class CommServiceImpl implements CommService {
         rolePermissionRepository.save(rolePermission);
     }
 
+    private void creatOriginMenu() {
+        Menu menu = menuRepository.findById(1).orElse(new Menu());
+
+        menu.setPId(0);
+        menu.setPPath("0,1");
+        menu.setName("Auth");
+        menu.setTitle("权限管理");
+        menu.setPath("/auth");
+        menu.setComponent("layout");
+        menu.setIcon("el-icon-s-help");
+        menu.setSort("99");
+        menu.setStatus(EnableStatus.ENABLE);
+        menuRepository.save(menu);
+    }
+
     private void creatSupperAdminAccount() {
         User user = userRepository.findFirstByName("admin");
         if (user == null) {
@@ -110,5 +130,6 @@ public class CommServiceImpl implements CommService {
         creatOriginPermission();
         creatOriginRolePermission();
         creatSupperAdminAccount();
+        creatOriginMenu();
     }
 }

@@ -66,8 +66,12 @@ public class User extends BaseEntity {
     @Transient
     private List<Role> roles;
 
-//    @ApiModelProperty(value = "用户权限")
-//    @Transient
-//    private List<Permission> permissions;
+    @ApiModelProperty(value = "用户权限")
+    @Transient
+    private List<Permission> permissions;
+
+    @ApiModelProperty(value = "用户菜单")
+    @Transient
+    private List<Menu> menus;
 
 }

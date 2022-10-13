@@ -26,9 +26,9 @@ public class UserController {
 
     @ApiOperation(value = "登录接口", notes = "")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "loginType", value = "登录类型：PASSWORD-密码登录；SMS-短信验证码登录,MOBILE_ONE_PASS-一键登录，WECHAT-微信登录,，WEIBO-微博登录，QQ-QQ登录", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType = "query", name = "email", value = "邮箱", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType = "query", name = "param", value = "密码登陆是，传密码；短信-短信验证码；一键登录-运营商token；第三方登陆时-第三方code；当WECHAT_GZH_WEBAPP时，param传ticket", required = false, dataType = "String"),
+//            @ApiImplicitParam(paramType = "query", name = "loginType", value = "登录类型：PASSWORD-密码登录；SMS-短信验证码登录,MOBILE_ONE_PASS-一键登录，WECHAT-微信登录,，WEIBO-微博登录，QQ-QQ登录", required = true, dataType = "String"),
+//            @ApiImplicitParam(paramType = "query", name = "email", value = "邮箱", required = true, dataType = "String"),
+//            @ApiImplicitParam(paramType = "query", name = "param", value = "密码登陆是，传密码；短信-短信验证码；一键登录-运营商token；第三方登陆时-第三方code；当WECHAT_GZH_WEBAPP时，param传ticket", required = false, dataType = "String"),
     })
     @PostMapping("vt/login")
     public synchronized Result login(@RequestBody LoginBody loginBody) {
@@ -71,6 +71,7 @@ public class UserController {
         /*获取用户角色权限*/
 //        userService.prepareUserPermission(user);
         /*获取用户菜单*/
+        userService.prepareUserMenu(user);
 
         return Result.okResult(user);
     }

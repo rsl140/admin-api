@@ -7,11 +7,13 @@ import com.serve.api.comm.enums.ErrorCode;
 import com.serve.api.comm.model.BusinessException;
 import com.serve.api.comm.service.MemoryCache;
 import com.serve.api.comm.utils.SpringUtil;
+import com.serve.api.user.entity.Menu;
 import com.serve.api.user.entity.Permission;
 import com.serve.api.user.entity.Role;
 import com.serve.api.user.entity.User;
 import com.serve.api.user.enums.LoginType;
 import com.serve.api.user.model.LoginBody;
+import com.serve.api.user.repository.MenuRepository;
 import com.serve.api.user.repository.PermissionRepository;
 import com.serve.api.user.repository.RoleRepository;
 import com.serve.api.user.repository.UserRepository;
@@ -37,6 +39,8 @@ public class UserService {
     private RoleRepository roleRepository;
     @Autowired
     private PermissionRepository permissionRepository;
+    @Autowired
+    private MenuRepository menuRepository;
 
     public User getById(int userId) {
         long timestart = System.currentTimeMillis();
@@ -152,5 +156,13 @@ public class UserService {
 
         List<Permission> permissions = permissionRepository.findPermissionByRoleId(rolesIds);
         user.setPermissions(permissions);
+    }
+
+    public void prepareUserMenu(User user) {
+        List<Role> roles = user.getRoles();
+        List<Integer> rolesIds = roles.stream().map(Role::getId).collect(Collectors.toList());
+
+        List<Menu> menu = menuRepository.findMenuByRoleId(rolesIds);
+        user.setMenus(menu);
     }
 }
