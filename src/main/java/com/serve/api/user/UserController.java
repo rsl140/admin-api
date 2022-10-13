@@ -66,10 +66,12 @@ public class UserController {
         User user1 = new User();
         BeanUtils.copyProperties(user, user1);
         user = user1;
-//        if (!StringUtils.isEmpty(userType)) {
-//            userService.prepareUserOrganization(user, userType);
-//            userService.prepareRoleInfoByUserType(user, userType);
-//        }
+        /*获取用户角色*/
+        userService.prepareUserRole(user);
+        /*获取用户角色权限*/
+//        userService.prepareUserPermission(user);
+        /*获取用户菜单*/
+
         return Result.okResult(user);
     }
 }

@@ -7,9 +7,13 @@ import com.serve.api.comm.enums.ErrorCode;
 import com.serve.api.comm.model.BusinessException;
 import com.serve.api.comm.service.MemoryCache;
 import com.serve.api.comm.utils.SpringUtil;
+import com.serve.api.user.entity.Permission;
+import com.serve.api.user.entity.Role;
 import com.serve.api.user.entity.User;
 import com.serve.api.user.enums.LoginType;
 import com.serve.api.user.model.LoginBody;
+import com.serve.api.user.repository.PermissionRepository;
+import com.serve.api.user.repository.RoleRepository;
 import com.serve.api.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,6 +33,10 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private UserSecurityService userSecurityService;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private PermissionRepository permissionRepository;
 
     public User getById(int userId) {
         long timestart = System.currentTimeMillis();
@@ -39,6 +48,7 @@ public class UserService {
         return user;
     }
 
+    /*登录*/
     public Map<String, Object> login(LoginBody loginBody) {
         User user = null;
         LoginType loginType = loginBody.getLoginType();
@@ -60,6 +70,7 @@ public class UserService {
         return map;
     }
 
+    /*密码登录*/
     public User loginByPassword(LoginBody loginBody) {
         List<User> userList = new ArrayList<>();
         User user = null;
@@ -102,7 +113,7 @@ public class UserService {
         }
     }
 
-    // 邮箱注册
+    /*邮箱注册*/
     public synchronized User registerByEmail_(String email, String password) {
         //参数验证
         if (StringUtils.isEmpty(email)) {
@@ -113,6 +124,8 @@ public class UserService {
         if (user == null) {
 //            throw new BusinessException(ErrorCode.USER_HAD_EXISTS);
             user = createAndSaveUser(email);
+        } else {
+            throw new BusinessException(ErrorCode.USER_HAD_EXISTS);
         }
         userSecurityService.setUserPassword(user.getId(), password);
         return user;
@@ -126,5 +139,18 @@ public class UserService {
         user = userRepository.save(user);
         int userId = user.getId();
         return userRepository.save(user);
+    }
+
+    public void prepareUserRole(User user) {
+        List<Role> roles = roleRepository.findRoleByUserId(user.getId());
+        user.setRoles(roles);
+    }
+
+    public void prepareUserPermission(User user) {
+        List<Role> roles = user.getRoles();
+        List<Integer> rolesIds = roles.stream().map(Role::getId).collect(Collectors.toList());
+
+        List<Permission> permissions = permissionRepository.findPermissionByRoleId(rolesIds);
+        user.setPermissions(permissions);
     }
 }

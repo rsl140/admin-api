@@ -11,6 +11,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -60,4 +61,13 @@ public class User extends BaseEntity {
     @ApiModelProperty(value = "用户第三方关联信息")
     @Transient
     private UserSecurity security;
+
+    @ApiModelProperty(value = "用户角色")
+    @Transient
+    private List<Role> roles;
+
+//    @ApiModelProperty(value = "用户权限")
+//    @Transient
+//    private List<Permission> permissions;
+
 }
