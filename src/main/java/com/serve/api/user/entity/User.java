@@ -1,5 +1,6 @@
 package com.serve.api.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.serve.api.auth.entity.Menu;
 import com.serve.api.auth.entity.Permission;
 import com.serve.api.auth.entity.Role;
@@ -55,6 +56,10 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(64) DEFAULT 'ENABLE' ")
     private EnableStatus status;
+
+    @OneToMany(targetEntity = UserRole.class, mappedBy = "user")
+    @JsonIgnore
+    private List<UserRole> userRoles;
 
     /***********以下为额外属性，不参与映射数据库*****************/
     @ApiModelProperty(value = "是否新注册")

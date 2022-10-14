@@ -7,6 +7,7 @@ import com.serve.api.auth.repository.MenuRepository;
 import com.serve.api.auth.repository.RoleRepository;
 import com.serve.api.comm.utils.CommUtils;
 import com.serve.api.user.entity.User;
+import com.serve.api.user.entity.UserRole;
 import com.serve.api.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -41,10 +44,11 @@ public class AuthService {
         return roleRepository.findAll();
     }
 
+    // 三表连查参考于 https://blog.csdn.net/weixin_45611545/article/details/114011853
     public Page<User> findUserBy(String name, String mobile, String email, Integer roleId, Integer pageNo, Integer pageSize) {
-        //动态查询
+        /*动态查询*/
         Specification<User> sf = (Specification<User>) (root, query, cb) -> {
-            //用于添加所有查询条件
+            // 用于添加所有查询条件
             List<Predicate> p = new ArrayList<>();
             if (!StringUtils.isEmpty(name)) {
                 Predicate p1 = cb.like(root.get("name").as(String.class), "%" + name + "%");
@@ -58,18 +62,30 @@ public class AuthService {
                 Predicate p3 = cb.like(root.get("email").as(String.class), "%" + email + "%");
                 p.add(p3);
             }
+            Join<User, UserRole> userUserRoleJoin = root.join("userRoles", JoinType.INNER);
+            Join<UserRole, Role> roleRoleJoin = userUserRoleJoin.join("role", JoinType.LEFT);
+
+            if (!StringUtils.isEmpty(roleId)) {
+                Predicate p4 = cb.equal(userUserRoleJoin.get("roleId").as(Integer.class), roleId);
+                p.add(p4);
+            }
+
+
             Predicate[] pre = new Predicate[p.size()];
             Predicate and = cb.and(p.toArray(pre));     //查询条件 and
-            //Predicate or = cb.or(p.toArray(pre));       //查询条件 or
+            // Predicate or = cb.or(p.toArray(pre));       //查询条件 or
             query.where(and);       //添加查询条件
 
-            //设置排序
+            // 设置排序
             List<Order> orders = new ArrayList<>();
             orders.add(cb.desc(root.get("id")));       //倒序
 //            orders.add(cb.asc(root.get("username")));   //正序
+            /*去重*/
+            query.distinct(true);
             return query.orderBy(orders).getRestriction();
         };
         Pageable pageable = CommUtils.getPageable(pageNo, pageSize);
+
         return userRepository.findAll(sf, pageable);
     }
 }
