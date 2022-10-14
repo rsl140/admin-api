@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.serve.api.comm.config.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -355,6 +358,24 @@ public class CommUtils {
             }
         }
         return list;
+    }
+
+    public static Pageable getPageable(Integer pageNo, Integer pageSize) {
+        if (!CommUtils.isValidInt(pageNo)) {
+            pageNo = 1;
+        }
+        if (!CommUtils.isValidInt(pageSize)) {
+            pageSize = 20;
+        }
+        return PageRequest.of(pageNo - 1, pageSize);
+    }
+
+    public static boolean isValidInt(Integer id) {
+        if (id != null && id != Constant.NONE_ID) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static String getSuffix(String fileName) {

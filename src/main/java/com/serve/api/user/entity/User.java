@@ -1,5 +1,8 @@
 package com.serve.api.user.entity;
 
+import com.serve.api.auth.entity.Menu;
+import com.serve.api.auth.entity.Permission;
+import com.serve.api.auth.entity.Role;
 import com.serve.api.comm.enums.EnableStatus;
 import com.serve.api.comm.model.BaseEntity;
 import com.serve.api.user.enums.Gender;

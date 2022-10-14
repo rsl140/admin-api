@@ -1,21 +1,21 @@
 package com.serve.api.user.service;
 
 
+import com.serve.api.auth.entity.Menu;
+import com.serve.api.auth.entity.Permission;
+import com.serve.api.auth.entity.Role;
+import com.serve.api.auth.repository.MenuRepository;
+import com.serve.api.auth.repository.PermissionRepository;
+import com.serve.api.auth.repository.RoleRepository;
 import com.serve.api.comm.config.JwtHelper;
 import com.serve.api.comm.enums.EnableStatus;
 import com.serve.api.comm.enums.ErrorCode;
 import com.serve.api.comm.model.BusinessException;
 import com.serve.api.comm.service.MemoryCache;
 import com.serve.api.comm.utils.SpringUtil;
-import com.serve.api.user.entity.Menu;
-import com.serve.api.user.entity.Permission;
-import com.serve.api.user.entity.Role;
 import com.serve.api.user.entity.User;
 import com.serve.api.user.enums.LoginType;
 import com.serve.api.user.model.LoginBody;
-import com.serve.api.user.repository.MenuRepository;
-import com.serve.api.user.repository.PermissionRepository;
-import com.serve.api.user.repository.RoleRepository;
 import com.serve.api.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +51,7 @@ public class UserService {
         }
         return user;
     }
+
 
     /*登录*/
     public Map<String, Object> login(LoginBody loginBody) {

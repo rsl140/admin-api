@@ -51,7 +51,6 @@ public class UserController {
 //    @ApiOperation(value = "用户信息", notes = "")
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "header", name = "Authorization", value = "token", required = false, dataType = "String"),
-//
 //    })
 //    @GetMapping("userInfo")
 //    public Result getUserInfo() {

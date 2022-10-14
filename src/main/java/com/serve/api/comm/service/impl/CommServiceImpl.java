@@ -1,9 +1,16 @@
 package com.serve.api.comm.service.impl;
 
+import com.serve.api.auth.entity.Menu;
+import com.serve.api.auth.entity.Permission;
+import com.serve.api.auth.entity.Role;
+import com.serve.api.auth.entity.RolePermission;
+import com.serve.api.auth.repository.*;
 import com.serve.api.comm.enums.EnableStatus;
 import com.serve.api.comm.service.CommService;
-import com.serve.api.user.entity.*;
-import com.serve.api.user.repository.*;
+import com.serve.api.user.entity.User;
+import com.serve.api.user.entity.UserRole;
+import com.serve.api.user.repository.UserRepository;
+import com.serve.api.user.repository.UserRoleRepository;
 import com.serve.api.user.service.UserSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
-package com.serve.api.user.repository;
+package com.serve.api.auth.repository;
 
-import com.serve.api.user.entity.Menu;
+import com.serve.api.auth.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

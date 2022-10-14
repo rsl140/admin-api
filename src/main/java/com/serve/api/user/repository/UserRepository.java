@@ -1,15 +1,15 @@
 package com.serve.api.user.repository;
 
 import com.serve.api.comm.enums.EnableStatus;
+import com.serve.api.comm.model.BaseRepo;
 import com.serve.api.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Set;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends BaseRepo<User, Integer> {
     User findFirstByMobileAndStatus(String mobile, EnableStatus status);
 
     User findFirstByEmailAndStatus(String email, EnableStatus status);

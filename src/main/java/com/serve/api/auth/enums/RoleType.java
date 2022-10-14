@@ -1,4 +1,4 @@
-package com.serve.api.user.enums;
+package com.serve.api.auth.enums;
 
 import io.swagger.annotations.ApiModel;
 

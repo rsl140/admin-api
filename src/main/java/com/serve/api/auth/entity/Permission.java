@@ -1,4 +1,4 @@
-package com.serve.api.user.entity;
+package com.serve.api.auth.entity;
 
 import com.serve.api.comm.model.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -14,9 +14,9 @@ import javax.persistence.Entity;
 @Data
 @DynamicInsert
 @DynamicUpdate
-@ApiModel(value = "User角色表")
-public class Role extends BaseEntity {
-    @ApiModelProperty(value = "角色名")
+@ApiModel(value = "User权限表")
+public class Permission extends BaseEntity {
+    @ApiModelProperty(value = "权限名")
     @Column(columnDefinition = "varchar(64) DEFAULT '' ")
     private String name;
 

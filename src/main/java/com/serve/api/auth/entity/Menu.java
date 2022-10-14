@@ -1,4 +1,4 @@
-package com.serve.api.user.entity;
+package com.serve.api.auth.entity;
 
 import com.serve.api.comm.enums.EnableStatus;
 import com.serve.api.comm.model.BaseEntity;
