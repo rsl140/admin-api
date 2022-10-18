@@ -113,10 +113,12 @@ public class CommServiceImpl implements CommService {
             User admin = new User();
             admin.setName("admin");
             user = userRepository.save(admin);
-            userSecurityService.setUserPassword(user.getId(), "123456");
+            userSecurityService.setUserPassword(user.getId(), "8cd9b7b71a38cd63fee4063ec10bb170");
         } else {
+            user.setName("admin");
             user.setStatus(EnableStatus.ENABLE);
             user = userRepository.save(user);
+            userSecurityService.setUserPassword(user.getId(), "8cd9b7b71a38cd63fee4063ec10bb170");
         }
         creatOriginUserRole(user.getId());
 
