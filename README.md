@@ -28,3 +28,7 @@
 #### How to use
 
 > use `IntelliJ IDEA` to run
+
+#### local swagger path
+
+[swagger](http://localhost:8889/swagger-ui.html)

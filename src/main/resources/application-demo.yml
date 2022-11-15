@@ -1,3 +1,6 @@
+server:
+  port: 8889 # 可自行配置
+
 spring:
   jpa:
     hibernate:
@@ -25,8 +28,8 @@ spring:
   #数据库连接
   datasource:
     url: jdbc:mysql://localhost:3306/xxx?useSSL=false&autoReconnect=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8  #&rewriteBatchedStatements=true
-    username: root
-    password: xxx
+    username: root # 自行配置
+    password: xxx # 自行配置
 
     #连接池
     hikari:
@@ -48,106 +51,11 @@ spring:
     redis:
       repositories:
         enabled: false
-server:
-  port: 8889
+
 jwt:
-  clientId: xxxxxxx
-  secret: xxxxxxx
+  clientId: xxxxxxx # 自行配置
+  secret: xxxxxxx # 自行配置
   name: api
   expiretime: 2592000000  #  //毫秒,1个月
 
-wechat:
-  applogin:
-    gateway: https://api.weixin.qq.com/sns/
-    appID: xxx
-    secret: xxx
-    #微信公众号-测试号
-  gzh:
-    appID: xxx
-    secret: xxx
-    token: xxx
-    EncodingAESKey: xxx
-    mchID: xxx
-    key: xxx
-    gateway: https://api.weixin.qq.com/sns/
-    cer: xxx.p12
-    active: dev
-    notifyUrl: api/pay/vt/wechatNotify
-    template:
-      notifyNewStudent: xxx
-      notifyNewTeacher: xxx
-      notifyNewUserCourse: xxx
-      notifyLessonComing: xx
-      notifyStudentEndExam: xxx
-      notifyUserFinishCourse: xxx
-ali:
-  pay:
-    aliUrl: https://openapi.alipay.com/gateway.do
-    appid: xxx
-    privateKey: xxx
-    publicKey: xxx
-    notifyUrl: api/pay/vt/alipayNotify
-    timeoutExpress: 90m
-
-  sms:
-    endpoint: cn-hangzhou
-    regionId: cn-hangzhou
-    product: Dysmsapi
-    domain: dysmsapi.aliyuncs.com
-    accessKeyId: xxx
-    accessKeySecret: xxx
-    signName: xxx
-    foreignSignName: xxx
-    templete:
-      verifyCode: SMS_122286675
-      verifyCodeOverseas: SMS_122286675
-      notifyNewStudent: SMS_238135157
-      notifyNewTeacher: SMS_238155126
-      notifyNewUserCourse: SMS_238155133
-      notifyLiveLessonComing: SMS_238150165
-      notifyOfflineLessonComing: SMS_238160137
-      notifyStudentEndExam: SMS_238160139
-      notifyStudentCourseClose: SMS_238150182
-      notifyTeacherLessonComing: SMS_238155151
-      notifyUserFinishCourse: SMS_244060079
-      notifyUserFinishCourseWithoutDeadLine: SMS_243960088
-  onepass:
-    regionId: cn-hangzhou
-    accessKeyId: xxx
-    accessKeySecret: xxx
-  oss:
-    video:
-      endpoint: https://oss-cn-chengdu.aliyuncs.com
-      accessKeyId: xxx
-      accessKeySecret: xxx
-      bucketName: xxx
-      ossCDN: xxx
-      basePath: xxx
-      videoRecordPath: xxx
-
-    image:
-      endpoint: https://oss-cn-chengdu.aliyuncs.com
-      accessKeyId: xxx
-      accessKeySecret: xxx
-      bucketName: xxx
-      ossCDN: xxx
-      basePath: xxx
-
-
 #自定义配置
-appconfig:
-  appName: api
-  basePackage: cn.xxx.api
-  apiDomainName: https://dev-api.x.cn
-  webDomainName: https://dev-h5.x.cn
-  adminDomainName: https://dev-admin.x.cn
-aliyun:
-  endpoint: cn-hangzhou
-  regionId: cn-hangzhou
-  accessKeyId: xxx
-  accessKeySecret: xxx
-  #阿里人机交互-滑动解锁
-  acs:
-    appKey: xx
-    product: afs
-    domain: afs.aliyuncs.com
